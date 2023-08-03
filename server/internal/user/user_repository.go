@@ -22,7 +22,8 @@ func NewUserRepository(db DBTX) UserRepository {
 
 func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) {
 	var lastInsertId int
-	query := "INSER INTO users(username, password, email) VALUES {$1, $2, $3} returning id"
+	// Postgres Pattern Insert
+	query := "INSERT INTO users(username, password, email) VALUES {$1, $2, $3} returning id"
 	err := r.db.QueryRowContext(ctx, query, user.Username, user.Password, user.Email).Scan(&lastInsertId)
 	if err != nil {
 		return &User{}, err
