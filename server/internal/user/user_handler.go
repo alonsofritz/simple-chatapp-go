@@ -1,4 +1,3 @@
-// TODO: Implement this handler
 package user
 
 import (
@@ -31,4 +30,27 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var user LoginUserReq
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	u, err := h.UserService.Login(c.Request.Context(), &user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.SetCookie("jwt", u.accessToken, 60*60*24, "/", "localhost", false, true)
+
+	c.JSON(http.StatusOK, u)
+}
+
+func (h *UserHandler) Logout(c *gin.Context) {
+	c.SetCookie("jwt", "", -1, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "logout successfully"})
 }
