@@ -1,4 +1,4 @@
-postgres_init:
+postgresinit:
 	docker run --name postgres15 -p 5433:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -d postgres:15-alpine
 
 postgres:
@@ -10,10 +10,10 @@ createdb:
 dropdb:
 	docker exec -it postgres15 dropdb chatapp-go
 
-migrate_up:
+migrateup:
 	migrate -path db/migration -database "postgresql://root:root@localhost:5433/chatapp-go?sslmode=disable" -verbose up
 
-migrate_down:
+migratedown:
 	migrate -path db/migration -database "postgresql://root:root@localhost:5433/chatapp-go?sslmode=disable" -verbose down
 
-.PHONY: postgres_init postgres createdb dropdb migrate_up migrate_down
+.PHONY: postgresinit postgres createdb dropdb migrateup migratedown
