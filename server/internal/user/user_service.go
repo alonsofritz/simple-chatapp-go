@@ -8,19 +8,19 @@ import (
 	"github.com/alonsofritz/simple-chatapp-go/server/util"
 )
 
-type service struct {
+type userService struct {
 	UserRepository
 	timeout time.Duration
 }
 
-func NewService(repository UserRepository) Service {
-	return &service{
-		repository,
+func NewUserService(userRepository UserRepository) UserService {
+	return &userService{
+		userRepository,
 		time.Duration(2) * time.Second,
 	}
 }
 
-func (s *service) CreateUser(c context.Context, req *CreateUserReq) (*CreateUserRes, error) {
+func (s *userService) CreateUser(c context.Context, req *CreateUserReq) (*CreateUserRes, error) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 
